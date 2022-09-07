@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <title>Croup Trainer</title>
+</head>
+
+<body>
+    <div>
+        <div class="button-box">
+            <button id="stup">Straight Up</button>
+            <button id="split">Split</button>
+            <button id="street">Street</button>
+            <button id="corner">Corner</button>
+            <button id="mix">Mix</button>
+        </div>
+        <div class="button-box">
+            <button id="hard">Hard</button>
+            <button id="med">Medium</button>
+            <button id="easy">Easy</button>
+        </div>
+    </div>
+    <div id="game-area">
+        <div id="board-grid">
+            <div class="cell" id="c1"></div>
+            <div class="cell" id="c2"></div>
+            <div class="cell" id="c3"></div>
+            <div class="cell" id="c4"></div>
+            <div id="c5" class="cell"></div>
+            <div class="cell" id="c6"></div>
+            <div class="cell" id="c7"></div>
+            <div class="cell" id="c8"></div>
+            <div class="cell" id="c9"></div>
+        </div>
+        <div id="input-results">
+            <form>
+                <input type="number" step="1" id="answer">
+                <input type="submit" id="submit"></button>
+            </form>
+            <div id="results-div">
+                <table>
+                    <tr>
+                        <th>Question</th>
+                        <th>Answer</th>
+                        <th>Status</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="roulette.js"></script>
+
+</html>

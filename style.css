@@ -1,0 +1,105 @@
+html {
+    background-color: var(--bg-light);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+    --primary: #003f5c;
+    --secondary: #58508d;
+    --bg-light: #ecf0f1;
+}
+
+body {
+    margin: 0;
+}
+
+.button-box {
+    display: flex;
+    flex-direction: row;
+    background-color: cadetblue;
+}
+
+button,
+#submit {
+    background-color: var(--primary);
+    color: white;
+    font-size: medium;
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--secondary);
+    flex: 1;
+    margin: 0px;
+}
+
+button.active,
+button:active {
+    background-color: #bc5090;
+}
+
+#game-area {
+    display: flex;
+    flex-flow: row wrap;
+    height: 100vh;
+    align-items: center;
+    align-content: space-between;
+}
+
+#board-grid {
+    width: 300px;
+    height: 300px;
+    flex: 0 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+#input-results {
+    display: flex;
+    flex-flow: column wrap;
+    flex: 2 1 auto;
+}
+
+#input-results form {
+    margin: auto auto;
+}
+
+#results-div {
+    width: auto;
+    flex: auto;
+    max-height: 300px;
+    margin: 8px 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+#results-div table {
+    background-color: #f3d14b;
+    width: 100%;
+}
+
+#chip {
+    display: flex;
+    height: 55px;
+    width: 55px;
+    background-color: #003f5c;
+    border-radius: 50%;
+    border-style: dotted;
+    border-width: 1.5px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: x-large;
+    color: white;
+    font-weight: bold;
+    box-shadow: 2px 2px 4px 1px #58508d;
+}
+
+.cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #52ce7d;
+    border-style: solid;
+    border-width: 2px;
+    border-color: #27ae60;
+}
