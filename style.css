@@ -1,6 +1,7 @@
 html {
     background-color: var(--bg-light);
     font-family: Arial, Helvetica, sans-serif;
+    height: 100vh;
 }
 
 :root {
@@ -38,20 +39,24 @@ button:active {
 
 #game-area {
     display: flex;
-    flex-flow: row wrap;
+    flex-direction: row;
+    width: 100%;
 }
 
 @media screen and (max-width: 430px) {
     #game-area {
-        flex-flow: column wrap;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
     }
 }
 
 #board-grid {
-    width: 300px;
-    height: 300px;
+    position: relative;
+    width: 305px;
+    height: 305px;
     flex: 0 0 auto;
-    margin: 0 auto;
+    margin-left: 12px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
@@ -61,6 +66,7 @@ button:active {
     display: flex;
     flex-flow: column wrap;
     flex: 2 1 auto;
+    width: 100%;
 }
 
 #input-results form {
@@ -81,10 +87,19 @@ button:active {
     width: 100%;
 }
 
+#results-div table th {
+    background-color: #f3d14b;
+}
+
+#results-div table tr {
+    background-color: #ecf0f1;
+}
+
 #chip {
     display: flex;
-    height: 55px;
-    width: 55px;
+    position: absolute;
+    height: 47px;
+    width: 47px;
     background-color: #003f5c;
     border-radius: 50%;
     border-style: dotted;
@@ -105,5 +120,55 @@ button:active {
     background-color: #52ce7d;
     border-style: solid;
     border-width: 2px;
-    border-color: #27ae60;
+    border-color: #219451;
+}
+
+.cell.track {
+    border-style: solid solid solid double;
+    border-left-width: 8px;
+}
+
+.split {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: 24% auto;
+}
+
+.split2 {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    margin: auto 59%;
+}
+
+.corner {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: 24% 25%;
+}
+
+.corner2 {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: 59% 59%;
+}
+
+.street {
+    left: -22px;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+}
+
+.six {
+    left: -22px;
+    top: 0;
+    bottom: 0;
+    margin: 24% auto;
 }
