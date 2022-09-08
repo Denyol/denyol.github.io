@@ -39,15 +39,19 @@ button:active {
 #game-area {
     display: flex;
     flex-flow: row wrap;
-    height: 100vh;
-    align-items: center;
-    align-content: space-between;
+}
+
+@media screen and (max-width: 430px) {
+    #game-area {
+        flex-flow: column wrap;
+    }
 }
 
 #board-grid {
     width: 300px;
     height: 300px;
     flex: 0 0 auto;
+    margin: 0 auto;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
