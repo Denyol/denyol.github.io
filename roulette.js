@@ -5,7 +5,7 @@ const MED = 15;
 const EASY = 10;
 
 var resultsTable = document.getElementById("results-div").children[0];
-var suButton = document.getElementById("stup");
+var suButton = document.getElementById("straight");
 var splitButton = document.getElementById("split");
 var streetButton = document.getElementById("street");
 var cornerButton = document.getElementById("corner");
@@ -18,15 +18,12 @@ var easyButton = document.getElementById("easy");
 var form = document.getElementById("input-results").children[0];
 
 class Game {
-
-    static #CENTER = "c5";
-
     operands = []
     #state = 0;
 
-    constructor(diff = EASY, table = 35) {
+    constructor(diff = EASY, bet = "straight") {
         this.difficulty = diff;
-        this.table = table;
+        this.bet = bet;
 
         for (let i = 0; i < this.difficulty; i++) {
             let op = this.#genOperand();
@@ -41,16 +38,33 @@ class Game {
         console.log(this.operands)
     }
 
-    static get centerPos() {
-        return this.#CENTER;
-    }
-
     #genOperand() {
         return Math.ceil(Math.random() * this.difficulty);
     }
 
     verify(answer) {
         return answer == this.table * this.operands[this.#state];
+    }
+
+    get table() {
+        let r = 0;
+
+        switch (this.bet) {
+            case "straight":
+                r = 35;
+                break;
+            case "split":
+                r = 17;
+                break;
+            case "corner":
+                r = 8;
+                break;
+            case "street":
+                r = 11;
+                break;
+        }
+
+        return r;
     }
 
     next() {
@@ -75,13 +89,14 @@ let activeButtonHolder = {
     mode: null,
 }
 
-function addChip(value, location) {
+function addChip(value, betType) {
     removeChips();
 
     let chip = document.createElement("div");
     chip.setAttribute("id", "chip");
+    chip.className = betType;
     chip.innerHTML = value;
-    document.getElementById(location).appendChild(chip);
+    document.getElementById("board-grid").appendChild(chip);
     chips.push(chip);
 }
 
@@ -121,7 +136,7 @@ function setInactive(mode = false) {
 setActive(suButton);
 setActive(easyButton, true);
 
-let game = new Game(EASY, 35);
+let game = new Game(EASY, "straight");
 
 let gameRow = document.getElementsByClassName("button-box")[0];
 let modeRow = document.getElementsByClassName("button-box")[1];
@@ -135,19 +150,22 @@ function buttonListener(event, mode = false) {
     if (mode) {
         switch (btn.id) {
             case "easy":
-                game = new Game(EASY, 35);
+                game = new Game(EASY, game.bet);
                 break;
             case "med":
-                game = new Game(MED, 35);
+                game = new Game(MED, game.bet);
                 break;
             case "hard":
-                game = new Game(HARD, 35);
+                game = new Game(HARD, game.bet);
                 break;
         }
-
-        removeChips();
-        addChip(game.getQuestion(), Game.centerPos);
+    } else {
+        console.log(btn.id);
+        game = new Game(game.difficulty, btn.id);
     }
+
+    removeChips();
+    addChip(game.getQuestion(), game.bet)
 }
 
 for (let i = 0; i < gameRow.childNodes.length; i++) {
@@ -179,7 +197,7 @@ form.addEventListener("submit", function (e) {
 
             row.insertCell().innerHTML = "Correct!";
 
-            addChip(game.getQuestion(), Game.centerPos);
+            addChip(game.getQuestion(), game.bet);
         } else {
             row.insertCell().innerHTML = "Wrong!";
         }
@@ -188,4 +206,4 @@ form.addEventListener("submit", function (e) {
     }
 });
 
-addChip(game.getQuestion(), Game.centerPos);
+addChip(game.getQuestion(), "straight");
