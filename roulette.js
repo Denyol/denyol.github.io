@@ -1,87 +1,26 @@
 "use strict";
+import { Game, GameMix } from './game.js';
 
 const HARD = 20;
 const MED = 15;
 const EASY = 10;
 
-var resultsTable = document.getElementById("results-div").children[0];
-var suButton = document.getElementById("straight");
-var splitButton = document.getElementById("split");
-var streetButton = document.getElementById("street");
-var cornerButton = document.getElementById("corner");
-var mixButton = document.getElementById("mix");
+// Document constants
+const resultsTable = document.getElementById("results-div").children[0];
+const suButton = document.getElementById("straight");
+const splitButton = document.getElementById("split");
+const streetButton = document.getElementById("street");
+const cornerButton = document.getElementById("corner");
+const mixButton = document.getElementById("mix");
 
-var hardButton = document.getElementById("hard");
-var medButton = document.getElementById("med");
-var easyButton = document.getElementById("easy");
+const hardButton = document.getElementById("hard");
+const medButton = document.getElementById("med");
+const easyButton = document.getElementById("easy");
 
-var form = document.getElementById("input-results").children[0];
+const form = document.getElementById("input-results").children[0];
 
-class Game {
-    operands = []
-    #state = 0;
-
-    constructor(diff = EASY, bet = "straight") {
-        this.difficulty = diff;
-        this.bet = bet;
-
-        for (let i = 0; i < this.difficulty; i++) {
-            let op = this.#genOperand();
-
-            while (this.operands.includes(op)) {
-                op = this.#genOperand()
-            }
-
-            this.operands.push(op);
-        }
-
-        console.log(this.operands)
-    }
-
-    #genOperand() {
-        return Math.ceil(Math.random() * this.difficulty);
-    }
-
-    verify(answer) {
-        return answer == this.table * this.operands[this.#state];
-    }
-
-    get table() {
-        let r = 0;
-
-        switch (this.bet) {
-            case "straight":
-                r = 35;
-                break;
-            case "split":
-                r = 17;
-                break;
-            case "corner":
-                r = 8;
-                break;
-            case "street":
-                r = 11;
-                break;
-        }
-
-        return r;
-    }
-
-    next() {
-        this.#state++;
-
-        // Wrap around
-        if (this.#state >= this.operands.length) {
-            this.#state = 0;
-        }
-
-        return this.getQuestion();
-    }
-
-    getQuestion() {
-        return this.operands[this.#state];
-    }
-}
+const gameRow = document.getElementsByClassName("button-box")[0];
+const modeRow = document.getElementsByClassName("button-box")[1];
 
 let chips = [];
 let activeButtonHolder = {
@@ -89,15 +28,51 @@ let activeButtonHolder = {
     mode: null,
 }
 
-function addChip(value, betType) {
-    removeChips();
-
+// Add a single chip
+function addChip(type, value) {
     let chip = document.createElement("div");
     chip.setAttribute("id", "chip");
-    chip.className = betType;
+    chip.className = type;
     chip.innerHTML = value;
     document.getElementById("board-grid").appendChild(chip);
     chips.push(chip);
+}
+
+function addChips(game) {
+    if (game instanceof GameMix) {
+        if (game.straightUps > 0)
+            addChip("straight", game.straightUps);
+
+        if (game.streets > 0)
+            addChip("street", game.streets);
+
+        if (game.splits > 0) {
+            let split1 = Math.ceil(Math.random() * game.splits);
+            let split2 = game.splits - split1;
+
+            if (split1 > 0)
+                addChip("split", split1);
+
+            if (split2 > 0) {
+                addChip("split2", split2);
+            }
+        }
+
+        if (game.corners > 0) {
+            let corner1 = Math.ceil(Math.random() * game.corners);
+            let corner2 = game.corners - corner1;
+
+            if (corner1 > 0)
+                addChip("corner", corner1);
+
+            if (corner2 > 0) {
+                addChip("corner2", corner2);
+            }
+
+        }
+    } else {
+        addChip(game.bet, game.getQuestion());
+    }
 }
 
 function removeChips() {
@@ -131,6 +106,13 @@ function setInactive(mode = false) {
 
 }
 
+function newGame(diff, lastGame) {
+    if (lastGame instanceof GameMix)
+        return new GameMix(diff);
+    else
+        return new Game(diff, lastGame.bet)
+}
+
 // Set up
 
 setActive(suButton);
@@ -138,8 +120,7 @@ setActive(easyButton, true);
 
 let game = new Game(EASY, "straight");
 
-let gameRow = document.getElementsByClassName("button-box")[0];
-let modeRow = document.getElementsByClassName("button-box")[1];
+addChips(game);
 
 function buttonListener(event, mode = false) {
     let btn = event.target;
@@ -150,24 +131,26 @@ function buttonListener(event, mode = false) {
     if (mode) {
         switch (btn.id) {
             case "easy":
-                game = new Game(EASY, game.bet);
+                game = newGame(EASY, game);
                 break;
             case "med":
-                game = new Game(MED, game.bet);
+                game = newGame(MED, game);
                 break;
             case "hard":
-                game = new Game(HARD, game.bet);
+                game = newGame(HARD, game);
                 break;
         }
+    } else if (btn.id == "mix") {
+        game = new GameMix(game.difficulty);
     } else {
-        console.log(btn.id);
         game = new Game(game.difficulty, btn.id);
     }
 
     removeChips();
-    addChip(game.getQuestion(), game.bet)
+    addChips(game)
 }
 
+// Add button listeners to all buttons
 for (let i = 0; i < gameRow.childNodes.length; i++) {
     let btn = gameRow.childNodes[i];
     btn.addEventListener("click", function (e) {
@@ -189,7 +172,11 @@ form.addEventListener("submit", function (e) {
 
     if (answer.length > 0) {
         let row = resultsTable.insertRow();
-        row.insertCell().innerHTML = `${game.table} \u00D7 ${game.getQuestion()}`;
+
+        if (game instanceof GameMix)
+            row.insertCell().innerHTML = `${game.table}`;
+        else
+            row.insertCell().innerHTML = `${game.table} \u00D7 ${game.getQuestion()}`;
         row.insertCell().innerHTML = answer;
 
         if (game.verify(answer)) {
@@ -197,7 +184,8 @@ form.addEventListener("submit", function (e) {
 
             row.insertCell().innerHTML = "Correct!";
 
-            addChip(game.getQuestion(), game.bet);
+            removeChips();
+            addChips(game);
         } else {
             row.insertCell().innerHTML = "Wrong!";
         }
@@ -205,5 +193,3 @@ form.addEventListener("submit", function (e) {
         form.elements["answer"].value = "";
     }
 });
-
-addChip(game.getQuestion(), "straight");
