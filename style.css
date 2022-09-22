@@ -1,6 +1,6 @@
 html {
     background-color: var(--bg-light);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Roboto', Arial, Helvetica, sans-serif;
     height: 100vh;
 }
 
@@ -10,9 +10,28 @@ html {
     --bg-light: #ecf0f1;
 }
 
-body {
+nav {
+    width: 100%;
+    background: var(--primary);
+}
+
+body,
+nav ul {
     margin: 0;
 }
+
+nav ul li {
+    display: inline-block;
+    color: white;
+    list-style-type: none;
+    padding: 0.7rem;
+}
+
+.nav-link {
+    color: white;
+    text-decoration: none;
+}
+
 
 .github-badge svg {
     width: 30px;

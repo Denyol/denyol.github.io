@@ -2,7 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://denyol.github.io/roulette-trainer/</loc>
-    <lastmod>2022-09-09T06:32:25+00:00</lastmod>
-    <changefreq>daily</changefreq>
+    <lastmod>2022-09-23T06:32:25+00:00</lastmod>
+    <changefreq>weekly</changefreq>
   </url>
+  <url>
+    <loc>https://denyol.github.io/roulette-trainer/home.html</loc>
+    <lastmod>2022-09-23T06:32:25+00:00</lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+
 </urlset>
