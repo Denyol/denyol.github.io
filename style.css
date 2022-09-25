@@ -1,7 +1,7 @@
 html {
     background-color: var(--bg-light);
     font-family: 'Roboto', Arial, Helvetica, sans-serif;
-    height: 100vh;
+    height: 100%;
 }
 
 :root {
@@ -20,6 +20,12 @@ nav ul {
     margin: 0;
 }
 
+body {
+    height: 100%;
+    display: grid;
+    grid-template-rows: min-content 1fr;
+}
+
 nav ul li {
     display: inline-block;
     color: white;
@@ -32,7 +38,7 @@ nav ul li {
     text-decoration: none;
 }
 
-.github-badge svg {
+#github-badge svg {
     width: 30px;
     height: 30px;
     box-shadow: 3px 3px 4px 2px #52ce7d;
@@ -40,7 +46,7 @@ nav ul li {
     border-radius: 50%;
 }
 
-div.github-badge {
+#github-badge {
     position: fixed;
     width: 40px;
     height: 40px;
@@ -64,6 +70,7 @@ button,
     border-color: var(--secondary);
     flex: 1;
     margin: 0px;
+    transition: all 0.5s ease;
 }
 
 button.active,
@@ -74,58 +81,38 @@ button:active {
 #game-area {
     display: flex;
     flex-direction: row;
-    width: 100%;
-}
-
-@media screen and (max-width: 430px) {
-    #game-area {
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
-    }
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    height: 100%;
+    overflow-y: scroll;
 }
 
 #board-grid {
     position: relative;
     width: 305px;
     height: 305px;
-    flex: 0 0 auto;
     margin-left: 12px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
 }
 
-#input-results {
+#results-wrapper {
     display: flex;
-    flex-flow: column wrap;
-    flex: 2 1 auto;
+    flex-direction: column;
+    flex: 1 1 14rem;
+    max-width: 40rem;
+    align-items: center;
+}
+
+#results table,
+#results table th {
     width: 100%;
-}
-
-#input-results form {
-    margin: auto auto;
-}
-
-#results-div {
-    width: auto;
-    flex: auto;
-    max-height: 300px;
-    margin: 8px 0;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
-
-#results-div table {
-    background-color: #f3d14b;
-    width: 100%;
-}
-
-#results-div table th {
+    table-layout: fixed;
     background-color: #f3d14b;
 }
 
-#results-div table tr {
+#results table tr {
     background-color: #ecf0f1;
 }
 
