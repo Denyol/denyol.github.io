@@ -192,7 +192,6 @@ $(function () {
             }
 
             $("input#answer").val("");
-            $(".board-grid").focus();
         }
     });
 });
