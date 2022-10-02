@@ -89,11 +89,22 @@ button:active {
 
 #board-grid {
     position: relative;
-    width: 305px;
-    height: 305px;
-    margin-left: 12px;
+    width: 20rem;
+    height: 20rem;
+    margin-left: 1rem;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+}
+
+#overlay-grid {
+    position: absolute;
+    display: grid;
+    width: calc(100% / 6 * 5);
+    height: 50%;
+    top: 25%;
+    left: calc(100% / -12);
+    grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(3, 1fr);
 }
 
@@ -120,11 +131,11 @@ input#answer {
     font-size: 16px;
 }
 
-#chip {
+.chip {
     display: flex;
     position: absolute;
-    height: 47px;
-    width: 47px;
+    height: 3.2rem;
+    width: 3.2rem;
     background-color: #003f5c;
     border-radius: 50%;
     border-style: dotted;
@@ -148,60 +159,15 @@ input#answer {
     border-color: #219451;
 }
 
-.cell.track {
+.cell:nth-child(3n-1) {
     border-style: solid solid solid double;
     border-left-width: 8px;
 }
 
-.split {
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: 24% auto;
-}
-
-.split2 {
-    left: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto 59%;
-}
-
-.corner {
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: 24% 25%;
-}
-
-.corner2 {
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: 59% 59%;
-}
-
 .street {
-    left: -22px;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-}
-
-.six {
-    left: -22px;
-    top: 0;
-    bottom: 0;
-    margin: 24% auto;
+    grid-area: 2 / 1 / 3 / 2;
 }
 
 .straight {
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: auto auto;
+    grid-area: 2 / 4 / 3 / 5;
 }

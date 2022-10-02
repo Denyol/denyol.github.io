@@ -1,29 +1,19 @@
 "use strict";
-import { Game, GameMix } from './game.js';
-
-const HARD = 20;
-const MED = 15;
-const EASY = 10;
+import { Game, Position, Bet, Bets, MODE } from './game.js';
 
 $(function () {
     // Document constants
     const resultsTable = $("table");
     const suButton = $("#straight");
-    const splitButton = document.getElementById("split");
-    const streetButton = document.getElementById("street");
-    const cornerButton = document.getElementById("corner");
-    const mixButton = document.getElementById("mix");
-
-    const hardButton = document.getElementById("hard");
-    const medButton = document.getElementById("med");
     const easyButton = $("#easy");
+
+    const chipGrid = $("#overlay-grid");
 
     const form = $("form");
 
     const gameRow = $(".button-box").first();
     const modeRow = $(".button-box").eq(1);
 
-    let chips = [];
     let activeButtonHolder = {
         type: null,
         mode: null,
@@ -33,64 +23,56 @@ $(function () {
     setActive(suButton);
     setActive(easyButton, true);
 
-    let game = new Game(EASY, "straight");
+    let game = new Game(Game.DIFF.EASY, MODE.STRAIGHT_UP);
 
     addChips(game);
 
-    // Add a single chip
+    /**
+     * Add a single chip to the DOM at position on board grid
+     * @param {Position} type 
+     * @param {Number} value 
+     */
     function addChip(type, value) {
-        let chip = document.createElement("div");
-        chip.setAttribute("id", "chip");
-        chip.className = type;
-        chip.innerHTML = value;
-        document.getElementById("board-grid").appendChild(chip);
-        chips.push(chip);
+        if (value > 0) {
+            let chip = document.createElement("div");
+            let jChip = $(chip);
+
+            jChip.addClass("chip");
+            jChip.text(value);
+            jChip.css("grid-column", `${type.col} / span 1`);
+            jChip.css("grid-row", `${type.row} / span 1`);
+
+            chipGrid.append(chip);
+        }
     }
 
+    /**
+     * 
+     * @param {Game} game 
+     */
     function addChips(game) {
-        if (game instanceof GameMix) {
-            if (game.straightUps > 0)
-                addChip("straight", game.straightUps);
+        let bet = game.current;
 
-            if (game.streets > 0)
-                addChip("street", game.streets);
+        let posVals = Array();
 
-            if (game.splits > 0) {
-                let split1 = Math.ceil(Math.random() * game.splits);
-                let split2 = game.splits - split1;
+        posVals.push(bet.getStraightUp());
+        posVals.push(bet.getSplit(0));
+        posVals.push(bet.getSplit(1));
+        posVals.push(bet.getSplit(2));
+        posVals.push(bet.getSplit(3));
+        posVals.push(bet.getCorner(0));
+        posVals.push(bet.getCorner(1));
+        posVals.push(bet.getCorner(2));
+        posVals.push(bet.getCorner(3));
+        posVals.push(bet.getStreet());
+        posVals.push(bet.getSixLine(0));
+        posVals.push(bet.getSixLine(1));
 
-                if (split1 > 0)
-                    addChip("split", split1);
-
-                if (split2 > 0) {
-                    addChip("split2", split2);
-                }
-            }
-
-            if (game.corners > 0) {
-                let corner1 = Math.ceil(Math.random() * game.corners);
-                let corner2 = game.corners - corner1;
-
-                if (corner1 > 0)
-                    addChip("corner", corner1);
-
-                if (corner2 > 0) {
-                    addChip("corner2", corner2);
-                }
-
-            }
-        } else {
-            addChip(game.bet, game.getQuestion());
-        }
+        posVals.forEach((posVal) => addChip(posVal.position, posVal.value));
     }
 
     function removeChips() {
-        for (let i = 0; i < chips.length; i++) {
-            let chip = chips[i];
-            chip.remove();
-        }
-
-        chips = [];
+        chipGrid.children().remove();
     }
 
     function setActive(button, mode = false) {
@@ -116,14 +98,6 @@ $(function () {
 
     }
 
-    function newGame(diff, lastGame) {
-        if (lastGame instanceof GameMix)
-            return new GameMix(diff);
-        else
-            return new Game(diff, lastGame.bet)
-    }
-
-
     function buttonListener(event, mode = false) {
         let btn = $(event.target);
         let btnId = btn.attr("id");
@@ -134,19 +108,32 @@ $(function () {
         if (mode) {
             switch (btnId) {
                 case "easy":
-                    game = newGame(EASY, game);
+                    game = new Game(Game.DIFF.EASY, game.mode);
                     break;
                 case "med":
-                    game = newGame(MED, game);
+                    game = new Game(Game.DIFF.MED, game.mode);
                     break;
                 case "hard":
-                    game = newGame(HARD, game);
+                    game = new Game(Game.DIFF.HARD, game.mode);
                     break;
             }
         } else if (btnId == "mix") {
-            game = new GameMix(game.difficulty);
+            game = new Game(game.diff, MODE.PICTURE_BET);
         } else {
-            game = new Game(game.difficulty, btnId);
+            switch (btnId) {
+                case "straight":
+                    game = new Game(game.diff, MODE.STRAIGHT_UP);
+                    break;
+                case "split":
+                    game = new Game(game.diff, MODE.SPLIT);
+                    break;
+                case "corner":
+                    game = new Game(game.diff, MODE.CORNER);
+                    break;
+                case "street":
+                    game = new Game(game.diff, MODE.STREET);
+                    break;
+            }
         }
 
         removeChips();
@@ -154,38 +141,30 @@ $(function () {
     }
 
     // Add button listeners to all buttons
-    for (let i = 0; i < gameRow.children().length; i++) {
-        let btn = gameRow.children().eq(i);
-        btn.on("click", e => buttonListener(e));
-    }
+    gameRow.children().on("click", e => buttonListener(e));
 
     for (let i = 0; i < modeRow.children().length; i++) {
         let btn = modeRow.children().eq(i);
         btn.on("click", e => buttonListener(e, true));
     }
 
-    form.on("submit", function (e) {
+    form.on("submit", e => {
         e.preventDefault();
 
         let answer = $("input#answer").val()
 
         if (answer.length > 0) {
             // [0] get DOM object
-            let s = resultsTable;
             let row = resultsTable[0].insertRow();
 
-            if (game instanceof GameMix)
-                row.insertCell().innerHTML = `${game.table}`;
-            else
-                row.insertCell().innerHTML = `${game.table} \u00D7 ${game.getQuestion()}`;
+            row.insertCell().innerHTML = `${game.current.toString()}`;
             row.insertCell().innerHTML = answer;
 
             if (game.verify(answer)) {
-                game.next();
-
                 row.insertCell().innerHTML = "Correct!";
 
                 removeChips();
+                game.next();
                 addChips(game);
             } else {
                 row.insertCell().innerHTML = "Wrong!";
