@@ -14,6 +14,15 @@ $(function () {
     const gameRow = $(".button-box").first();
     const modeRow = $(".button-box").eq(1);
 
+    // Dialog setup
+    const dialog = $("dialog")[0];
+
+    if (typeof dialog.showModal == "function") // Modal not suported in all browsers
+        $("#help-button").on("click", () => dialog.showModal());
+    else
+        $("#help-button").on("click", () => dialog.show());
+    $("dialog div button").on("click", () => dialog.close());
+
     let activeButtonHolder = {
         type: null,
         mode: null,

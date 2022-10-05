@@ -38,20 +38,46 @@ nav ul li {
     text-decoration: none;
 }
 
-#github-badge svg {
-    width: 30px;
-    height: 30px;
-    box-shadow: 3px 3px 4px 2px #52ce7d;
-    z-index: 3;
-    border-radius: 50%;
+dialog {
+    position: fixed;
+    margin-top: 10vh;
+    border: #003f5c solid;
+    border-radius: 10%;
+    z-index: 100;
+    max-width: 21rem;
+    max-height: min(25rem, 80vh);
+    overflow-y: scroll;
 }
 
-#github-badge {
+dialog div {
+    display: flex;
+    flex-direction: column;
+}
+
+dialog div button {
+    width: fit-content;
+}
+
+#help-button {
     position: fixed;
+    display: flex;
+    background: var(--secondary);
+    color: white;
+    font-size: 2rem;
+    justify-content: center;
     width: 40px;
     height: 40px;
-    bottom: 6px;
-    right: 6px;
+    bottom: 1rem;
+    right: 1rem;
+    border-radius: 50%;
+    transition: all 1s ease;
+}
+
+#help-button:hover {
+    background: var(--bg-light);
+    color: var(--secondary);
+    border-radius: 25%;
+    transition: all 1s ease;
 }
 
 .button-box {
